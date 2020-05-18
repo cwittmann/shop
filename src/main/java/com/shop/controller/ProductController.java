@@ -6,6 +6,7 @@ import com.shop.model.Product;
 import com.shop.repository.ProductRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,21 +21,25 @@ public class ProductController {
     @Autowired
     private ProductRepository repository;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/products")
     public List<Product> getProducts() {
         return repository.findAll();
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/products/{id}")
     public Product getProduct(@PathVariable String id) throws Exception {
         return repository.findById(id).orElseThrow(() -> new Exception("Product not found: " + id));
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/products")
     public Product postProduct(@RequestBody Product product) {
         return repository.insert(product);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PutMapping("/products/{id}")
     public Product putProduct(@RequestBody Product newProduct, @PathVariable String id) throws Exception {
         return repository.findById(id).map(product -> {
@@ -43,6 +48,7 @@ public class ProductController {
         }).orElseThrow(() -> new Exception("Product not found: " + id));
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping("/products/{id}")
     public void deleteProduct(@PathVariable String id) {
         repository.deleteById(id);
