@@ -2,6 +2,7 @@ package com.shop.controller;
 
 import java.util.List;
 
+import com.shop.exception.NotFoundException;
 import com.shop.model.Order;
 import com.shop.repository.OrderRepository;
 
@@ -16,42 +17,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class OrderController {
 
     @Autowired
-    private OrderRepository repository;
+    private OrderRepository orderRepository;
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/orders")
     public List<Order> getOrders() {
-        return repository.findAll();
+        return orderRepository.findAll();
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
-    @GetMapping("/orders/{id}")
-    public Order getOrder(@PathVariable String id) throws Exception {
-        return repository.findById(id).orElseThrow(() -> new Exception("Order not found: " + id));
-    }
-
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/orders")
     public Order postOrder(@RequestBody Order order) {
-        return repository.insert(order);
+        return orderRepository.save(order);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PutMapping("/orders/{id}")
-    public Order putOrder(@RequestBody Order newOrder, @PathVariable String id) throws Exception {
-        return repository.findById(id).map(order -> {
-            order = newOrder;
-            return repository.save(order);
-        }).orElseThrow(() -> new Exception("Order not found: " + id));
+    public Order putOrder(@RequestBody Order newOrder, @PathVariable String id) {
+        return orderRepository.findById(id).map(order -> {
+            return orderRepository.save(newOrder);
+        }).orElseThrow(() -> new NotFoundException("Order not found: " + id));
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping("/orders/{id}")
     public void deleteOrder(@PathVariable String id) {
-        repository.deleteById(id);
+        orderRepository.deleteById(id);
     }
-
 }

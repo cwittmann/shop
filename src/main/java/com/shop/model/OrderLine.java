@@ -7,16 +7,15 @@ public class OrderLine {
     @Id
     public String id;
     public String orderId;
-    public String productId;
     public Integer amount;
+    public String productId;
+    public Product product;
 
-    public OrderLine() {
-    }
-
-    public OrderLine(String id, String orderId, String productId, Integer amount) {
+    public OrderLine(String id, String orderId, Integer amount, String productId, Product product) {
         this.id = id;
         this.orderId = orderId;
-        this.productId = productId;
         this.amount = amount;
+        this.productId = productId;
+        this.product = product;
     }
 }

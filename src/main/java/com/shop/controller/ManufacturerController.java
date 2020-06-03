@@ -2,6 +2,7 @@ package com.shop.controller;
 
 import java.util.List;
 
+import com.shop.exception.NotFoundException;
 import com.shop.model.Manufacturer;
 import com.shop.repository.ManufacturerRepository;
 
@@ -16,43 +17,37 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class ManufacturerController {
 
     @Autowired
-    private ManufacturerRepository repository;
+    private ManufacturerRepository manufacturerRepository;
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/manufacturers")
     public List<Manufacturer> getManufacturers() {
-        return repository.findAll();
+        return manufacturerRepository.findAll();
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/manufacturers/{id}")
-    public Manufacturer getManufacturer(@PathVariable String id) throws Exception {
-        return repository.findById(id).orElseThrow(() -> new Exception("Manufacturer not found: " + id));
+    public Manufacturer getManufacturer(@PathVariable String id) {
+        return manufacturerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Manufacturer not found: " + id));
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/manufacturers")
     public Manufacturer postManufacturer(@RequestBody Manufacturer manufacturer) {
-        return repository.insert(manufacturer);
+        return manufacturerRepository.save(manufacturer);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PutMapping("/manufacturers/{id}")
-    public Manufacturer putManufacturer(@RequestBody Manufacturer newManufacturer, @PathVariable String id)
-            throws Exception {
-        return repository.findById(id).map(manufacturer -> {
-            manufacturer = newManufacturer;
-            return repository.save(manufacturer);
-        }).orElseThrow(() -> new Exception("Manufacturer not found: " + id));
+    public Manufacturer putManufacturer(@PathVariable String id, @RequestBody Manufacturer newManufacturer) {
+        return manufacturerRepository.findById(id).map(manufacturer -> {
+            return manufacturerRepository.save(newManufacturer);
+        }).orElseThrow(() -> new NotFoundException("Manufacturer not found: " + id));
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping("/manufacturers/{id}")
     public void deleteManufacturer(@PathVariable String id) {
-        repository.deleteById(id);
+        manufacturerRepository.deleteById(id);
     }
-
 }
