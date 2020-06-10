@@ -7,6 +7,7 @@ import com.shop.model.User;
 import com.shop.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,24 +24,35 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
+
     @GetMapping("/users")
     public List<User> getUsers() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        for (User user : users) {
+            user.password = "";
+        }
+
+        return users;
     }
 
     @GetMapping("/users/{id}")
     public User getUser(@PathVariable String id) {
-        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found: " + id));
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found: " + id));
+        user.password = "";
+        return user;
     }
 
     @PostMapping("/users")
     public User postUser(@RequestBody User user) {
+        user.password = encoder.encode(user.password);
         return userRepository.save(user);
     }
 
     @PutMapping("/users/{id}")
     public User putUser(@RequestBody User newUser, @PathVariable String id) {
         return userRepository.findById(id).map(user -> {
+            newUser.password = encoder.encode(newUser.password);
             return userRepository.save(newUser);
         }).orElseThrow(() -> new NotFoundException("User not found: " + id));
     }
