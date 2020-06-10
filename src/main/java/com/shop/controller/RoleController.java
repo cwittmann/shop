@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.shop.exception.NotFoundException;
 import com.shop.model.Role;
+import com.shop.model.RoleRight;
 import com.shop.repository.RoleRepository;
+import com.shop.repository.RoleRightRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,6 +24,9 @@ public class RoleController {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private RoleRightRepository roleRightRepository;
 
     @GetMapping("/roles")
     public List<Role> getRoles() {
@@ -48,5 +53,9 @@ public class RoleController {
     @DeleteMapping("/roles/{id}")
     public void deleteRole(@PathVariable String id) {
         roleRepository.deleteById(id);
+        List<RoleRight> roleRights = roleRightRepository.findByRoleId(id);
+        for (RoleRight roleRight : roleRights) {
+            roleRightRepository.delete(roleRight);
+        }
     }
 }

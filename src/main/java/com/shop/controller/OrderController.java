@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.shop.exception.NotFoundException;
 import com.shop.model.Order;
+import com.shop.model.OrderLine;
+import com.shop.repository.OrderLineRepository;
 import com.shop.repository.OrderRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class OrderController {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderLineRepository orderLineRepository;
 
     @GetMapping("/orders")
     public List<Order> getOrders() {
@@ -43,5 +48,9 @@ public class OrderController {
     @DeleteMapping("/orders/{id}")
     public void deleteOrder(@PathVariable String id) {
         orderRepository.deleteById(id);
+        List<OrderLine> orderLines = orderLineRepository.findByOrderId(id);
+        for (OrderLine orderLine : orderLines) {
+            orderLineRepository.delete(orderLine);
+        }
     }
 }
