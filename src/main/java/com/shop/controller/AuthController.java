@@ -39,7 +39,7 @@ public class AuthController {
             return new ResponseEntity<String>("Successful", HttpStatus.OK);
         }
 
-        return new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<String>("Error", HttpStatus.UNAUTHORIZED);
     }
 
     private Boolean passwordMatches(String unencodedPassword, String encodedPassword) {
