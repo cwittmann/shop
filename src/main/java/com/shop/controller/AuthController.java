@@ -42,7 +42,7 @@ public class AuthController {
     }
 
     private Boolean passwordMatches(String unencodedPassword, String encodedPassword) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(4);
         return encoder.matches(unencodedPassword, encodedPassword);
     }
 }

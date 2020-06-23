@@ -24,7 +24,7 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(4);
 
     @GetMapping("/users")
     public List<User> getUsers() {
